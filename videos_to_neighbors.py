@@ -1,4 +1,5 @@
 import pickle
+import ast
 
 # unpickle the dictionaries! (will be included in the top-level function this function will be a helper for)
 with open("vid_to_patient_tuples.pkl", "rb") as f:
@@ -7,6 +8,14 @@ with open("patient_to_vid.pkl", "rb") as f:
     patient_to_vid = pickle.load(f)
 with open("vid_to_patient.pkl", "rb") as f:
     vid_to_patient = pickle.load(f)
+with open('vid_to_tags.pkl', 'rb') as f:
+    vid_to_tags = pickle.load(f)
+
+for vid in vid_to_tags:
+    # makes a set of all of the tags after converting each tag to lowercase and deleting spaces between words
+    # (gets rid of some duplicates, e.g. tedtalk vs. Ted Talk vs. ted talk)
+    vid_to_tags[vid] = set(ast.literal_eval(vid_to_tags[vid].lower().replace(" ", "")))
+
 
 def videos_to_neighbors():
     """
@@ -32,8 +41,18 @@ def videos_to_neighbors():
         return edge_weight
 
     def weight_by_tags(video1, video2):
-        # TODO: paste in code for weight_by_tags helper function
-        return 0
+        """
+        Given two linked videos, returns the shared tags count-based weight between them.
+
+        The weight is the number of shared tags between the two videos.
+        """
+
+        tags_set_1, tags_set_2 = vid_to_tags[video1], vid_to_tags[video2]
+
+        # weight is the length of the intersection (set) of the two video's tags sets
+        weight = len(tags_set_1.intersection(tags_set_2))
+
+        return weight
 
     videos_to_neighbors = {}
 
@@ -53,6 +72,7 @@ def videos_to_neighbors():
         videos_to_neighbors[current_video] = neighbor_videos_and_weights
 
     return videos_to_neighbors
+
 
 if __name__ == "__main__":
     pass
