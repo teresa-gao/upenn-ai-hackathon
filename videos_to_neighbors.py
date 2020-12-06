@@ -47,7 +47,13 @@ def videos_to_neighbors():
         The weight is the number of shared tags between the two videos.
         """
 
-        tags_set_1, tags_set_2 = vid_to_tags[video1], vid_to_tags[video2]
+        tags_set_1 = set()
+        tags_set_2 = set()
+
+        if video1 in vid_to_tags:
+            tags_set_1 = vid_to_tags[video1]
+        if video2 in vid_to_tags:
+            tags_set_2 = vid_to_tags[video2]
 
         # weight is the length of the intersection (set) of the two video's tags sets
         weight = len(tags_set_1.intersection(tags_set_2))
@@ -67,9 +73,9 @@ def videos_to_neighbors():
         # create a list with entries of the form `(neighbor_video, weight)` for our current video
         neighbor_videos_and_weights = []
         for neighbor_video in neighbor_videos:
-            neighbor_videos_and_weights.append( ( neighbor_video, weight_by_patients(current_video, neighbor_video) + weight_by_tags(current_video, neighbor_video) ) )
+            neighbor_videos_and_weights.append( ( neighbor_video, weight_by_patients(current_video, neighbor_video) + 1.25 * weight_by_tags(current_video, neighbor_video) ) )
 
-        videos_to_neighbors[current_video] = neighbor_videos_and_weights
+        videos_to_neighbors[current_video] = sorted(neighbor_videos_and_weights, key=lambda x: x[1], reverse=True)
 
     return videos_to_neighbors
 
@@ -78,5 +84,3 @@ if __name__ == "__main__":
     pass
 
     print(videos_to_neighbors())
-
-    # TODO: add tests?
