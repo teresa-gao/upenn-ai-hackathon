@@ -7,6 +7,7 @@ Created on Sat Dec  5 17:30:06 2020
 
 
 import pickle
+import ast
 
 patient_to_vid_file = "patient_to_vid.pkl"
 vid_to_patient_file = "vid_to_patient.pkl"
@@ -24,6 +25,8 @@ b_file.close()
 c_file = open(vid_to_tags_file, "rb")
 vid_tags_dict = pickle.load(c_file)
 c_file.close()
+for k in vid_tags_dict.keys():
+    vid_tags_dict[k] = set(ast.literal_eval(vid_tags_dict[k]))
 
 d_file = open(vid_to_patient_tuples_file, "rb")
 vid_patient_tuples_dict = pickle.load(d_file)
