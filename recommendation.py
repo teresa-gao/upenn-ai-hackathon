@@ -21,13 +21,16 @@ def recommendation(video_id):
              rec_list += wvids
      else:
         rec_list = wvids[:5]
-        rec_list.append(p[0])
+        if p[0] == video_id:
+            rec_list.append(p[1])
+        else:
+            rec_list.append(p[0])
      if video_id in rec_list:
          rec_list.remove(video_id)
      return rec_list
 
-r = recommendation(624)  
-print(r)  
+#r = recommendation(624)
+#print(r)
     
          
      
